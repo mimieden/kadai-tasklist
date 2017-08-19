@@ -18,11 +18,13 @@ class TasksController extends Controller
      */
     public function index()
     {
+        /*
         $tasks = Task::all();
 
         return view('tasks.index', [
             'tasks' => $tasks,
         ]);
+        */
     }
 
     /**
@@ -52,12 +54,18 @@ class TasksController extends Controller
             'status' => 'required|max:10',
         ]);
 
-        
+        /*
         $task = new Task;
         $task->content = $request->content;
         $task->status = $request->status;    // 追加
         $task->save();
-
+        */
+        
+        $request->user()->tasks()->create([
+            'content' => $request->content,
+            'status' => $request->status,
+        ]);
+        
         return redirect('/');
     }
 
@@ -108,9 +116,13 @@ class TasksController extends Controller
         $task = Task::find($id);
         $task->content = $request->content;
         $task->status = $request->status;
-        $task->save();
-
-        return redirect('/');
+        
+        //エラーハンドリング追加
+        if ($task->save()) {
+            return redirect('/');
+        } else {
+            return redirect()->back();
+        };
     }
 
     /**
@@ -122,8 +134,10 @@ class TasksController extends Controller
     public function destroy($id)
     {
         $task = Task::find($id);
-        $task->delete();
-
-        return redirect('/');
+        if ($task->delete()){
+            return redirect('/');
+        } else {
+            return redirect()->back();
+        };
     }
 }

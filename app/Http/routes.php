@@ -13,10 +13,12 @@
 
 //TOPページをログイン画面に変更
 //Route::get('/', 'TasksController@index');
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', 'WelcomeController@index');
+
+//Login時のみ
+Route::group(['middleware' => 'auth'], function () {
+    Route::resource('tasks', 'TasksController', ['only' => ['store', 'show', 'update', 'destroy', 'create', 'edit']]);
 });
-Route::resource('tasks', 'TasksController');
 
 //ユーザ登録
 Route::get('signup', 'Auth\AuthController@getRegister')->name('signup.get');
