@@ -3,6 +3,9 @@
 @section('content')
 
     <h1>id = {{ $task->id }} のタスク詳細ページ</h1>
+    
+    <p>{{ $user->id }}</p>
+    <p>{{ $task->user_id }}</p>
 
     <table class="table table-bordered">
         <tr>

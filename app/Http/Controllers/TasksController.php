@@ -61,11 +61,11 @@ class TasksController extends Controller
         $task->save();
         */
         
+        //エラーハンドリングは未実装
         $request->user()->tasks()->create([
             'content' => $request->content,
             'status' => $request->status,
         ]);
-        
         return redirect('/');
     }
 
@@ -77,11 +77,21 @@ class TasksController extends Controller
      */
     public function show($id)
     {
-        $task = Task::find($id);
-
-        return view('tasks.show', [
-            'task' => $task,
-        ]);
+        //$task = Task::find($id);
+        $user = \Auth::user();
+        $task = Task::where('id', $id)
+                    ->where('user_id', $user->id)
+                    ->first();
+        
+        if ($task != null) {
+            return view('tasks.show', [
+                'task' => $task,
+                'user' => $user,
+            ]); 
+        } else {
+            //エラー表示は未実装
+            return redirect('/');
+        };
     }
 
     /**
@@ -92,11 +102,20 @@ class TasksController extends Controller
      */
     public function edit($id)
     {
-        $task = Task::find($id);
-
-        return view('tasks.edit', [
-            'task' => $task,
-        ]);
+        //$task = Task::find($id);
+        $user = \Auth::user();
+        $task = Task::where('id', $id)
+                    ->where('user_id', $user->id)
+                    ->first();
+                    
+        if ($task != null) {
+            return view('tasks.edit', [
+                'task' => $task,
+            ]);
+        } else {
+            //エラー表示は未実装
+            return redirect('/');            
+        };
     }
 
     /**
@@ -117,12 +136,10 @@ class TasksController extends Controller
         $task->content = $request->content;
         $task->status = $request->status;
         
-        //エラーハンドリング追加
-        if ($task->save()) {
-            return redirect('/');
-        } else {
-            return redirect()->back();
-        };
+        //エラーハンドリングは未実装
+        $task->save();
+        return redirect('/');
+
     }
 
     /**
@@ -134,10 +151,9 @@ class TasksController extends Controller
     public function destroy($id)
     {
         $task = Task::find($id);
-        if ($task->delete()){
-            return redirect('/');
-        } else {
-            return redirect()->back();
-        };
+        
+        //エラーハンドリングは未実装
+        $task->delete();
+        return redirect('/');
     }
 }
